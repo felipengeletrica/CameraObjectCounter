@@ -1,91 +1,144 @@
-# 🎯 Camera Object Counter
+# Object Color Counter 📷🔴🔵
 
-Detecta e **conta objetos das cores vermelha e azul** passando por uma linha no vídeo usando **OpenCV**. Suporta câmeras locais (`--camera 0`) ou IP (`--camera rtsp://...`).
-
----
-
-## 🧪 Funcionalidades
-
-- ✅ Detecta objetos vermelhos e azuis com máscaras HSV.
-- ✅ Desenha contornos e calcula centroides.
-- ✅ Conta quantas vezes cada objeto cruza uma linha horizontal.
-- ✅ Suporte a câmeras locais e remotas (RTSP).
+Este projeto detecta objetos **vermelhos** e **azuis** em tempo real, contabilizando quantos passaram por uma **linha de contagem** usando a webcam ou uma câmera RTSP.
 
 ---
 
-## 🧰 Requisitos
+## ✅ Requisitos
 
-- Python 3.8+
+- Python 3.8 ou superior
 - OpenCV
 - NumPy
 
 ---
 
-## 🔧 Instalação
+## 🧰 Instalação do Python 3
 
-### 💻 Criar ambiente virtual
+### Windows
+1. Baixe o Python no site oficial: https://www.python.org/downloads/
+2. **Marque a opção "Add Python to PATH"** durante a instalação
+3. Confirme com:
+   ```sh
+   python --version
+   ```
 
-#### Linux / macOS:
+### Linux (Ubuntu/Debian)
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv -y
+```
+
+---
+
+## 🧪 Criando ambiente virtual
+
+### Windows
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### Linux
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-#### Windows:
-```cmd
-python -m venv .venv
-.venv\Scripts\activate
-```
+---
 
-### 📦 Instalar dependências
+## 📦 Instalando dependências
+
 ```bash
 pip install -r requirements.txt
 ```
 
-> Conteúdo do `requirements.txt`:
-> ```
-> opencv-python
-> numpy
-> ```
+---
+
+## 🔍 Como encontrar o ID da câmera
+
+### Windows
+1. Pressione `Win + R`, digite `devmgmt.msc` e pressione Enter
+2. Vá em "Dispositivos de imagem"
+3. A câmera geralmente será o ID `0`. Teste com:
+   ```bash
+   python main.py --camera 0
+   python main.py --camera 1
+   ```
+
+### Linux
+1. Liste os dispositivos:
+   ```bash
+   ls /dev/video*
+   ```
+2. Use o ID retornado:
+   ```bash
+   python main.py --camera /dev/video0
+   ```
 
 ---
 
-## 🚀 Executar o programa
+## 🎬 Executando o programa
 
-### ▶️ Usando a webcam local (ex: `0` ou `1`)
-
-#### Linux / macOS:
+### Câmera local
 ```bash
 python main.py --camera 0
 ```
 
-#### Windows:
-```cmd
+### Stream RTSP
+```bash
+python main.py --camera "rtsp://usuario:senha@ip:554/..."
+```
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+ObjectColorCounter/
+├── main.py               # Script principal
+├── requirements.txt      # Dependências
+└── README.md             # Este guia
+```
+
+---
+
+## 🔒 .gitignore sugerido
+
+```gitignore
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+```
+
+---
+
+## 🤖 Funcionalidades
+
+- Contagem de objetos vermelhos e azuis
+- Suporte a webcam e RTSP
+- Linha de contagem configurável
+- Argumento de câmera via terminal
+
+---
+
+## 📷 Exemplo
+
+```bash
 python main.py --camera 0
 ```
 
-### 🌐 Usando câmera IP (RTSP):
-```bash
-python main.py --camera rtsp://usuario:senha@192.168.0.100:554/stream
-```
+---
+
+## 🧠 Futuras melhorias
+
+- Detecção de mais cores
+- Exportação para CSV
+- Interface com PyQt5 ou Tkinter
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🧑‍💻 Autor
 
-```
-CameraObjectCounter/
-├── main.py              # Código principal
-├── requirements.txt     # Dependências
-└── README.md            # Documentação
-```
-
----
-
-## ⚠️ Problemas comuns
-
-- **Câmera não abre?** Verifique se o ID está correto (0, 1...) ou se o RTSP está acessível.
-- **Sem imagem?** Teste com `cv2.imshow("debug", frame)` para inspecionar a imagem.
-- **Erro de permissão?** Execute com permissões adequadas ou teste com outra câmera.
-
----
+**Felipe Vargas**  
+[LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com)
