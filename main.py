@@ -5,10 +5,14 @@ import argparse
 # Argumentos de linha de comando
 parser = argparse.ArgumentParser(description="Contador de objetos por cor (vermelho e azul).")
 parser.add_argument('--camera', type=str, default='0', help='ID da câmera ou URL RTSP')
+parser.add_argument('--video', type=str, default=None, help='Caminho para o arquivo de vídeo MP4')
 args = parser.parse_args()
 
-# Detecta se é webcam local (índice) ou string (RTSP)
-camera_source = int(args.camera) if args.camera.isdigit() else args.camera
+# Define a fonte de vídeo
+if args.video is not None:
+    camera_source = args.video
+else:
+    camera_source = int(args.camera) if args.camera.isdigit() else args.camera
 
 # Faixas de cor em HSV
 lower_red1 = np.array([0, 120, 70])
@@ -19,18 +23,15 @@ upper_red2 = np.array([180, 255, 255])
 lower_blue = np.array([100, 150, 0])
 upper_blue = np.array([140, 255, 255])
 
-# Linha de contagem
 line_y = 300
 line_thickness = 4
 
-# Contadores
 red_count = 0
 blue_count = 0
 
-# Abre câmera
 cap = cv2.VideoCapture(camera_source)
 if not cap.isOpened():
-    print("Erro ao abrir a câmera:", camera_source)
+    print("Erro ao abrir o vídeo/câmera:", camera_source)
     exit(1)
 
 def get_centroid(x, y, w, h):
@@ -39,12 +40,11 @@ def get_centroid(x, y, w, h):
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("Erro ao capturar frame.")
+        print("Fim do vídeo ou erro ao capturar frame.")
         break
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    # Máscaras de cor
     mask_red = cv2.bitwise_or(
         cv2.inRange(hsv, lower_red1, upper_red1),
         cv2.inRange(hsv, lower_red2, upper_red2)
@@ -64,7 +64,6 @@ while True:
             if area > 600:
                 x, y, w, h = cv2.boundingRect(cnt)
                 cx, cy = get_centroid(x, y, w, h)
-
                 if color == "red":
                     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
                     cv2.circle(frame, (cx, cy), 4, (0, 0, 255), -1)
@@ -79,13 +78,12 @@ while True:
     count_objects(mask_red, "red")
     count_objects(mask_blue, "blue")
 
-    # Exibe contagem
     cv2.putText(frame, f"Vermelhos: {red_count}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     cv2.putText(frame, f"Azuis: {blue_count}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
     cv2.imshow("Contador de Objetos", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(30 if args.video else 1) & 0xFF == ord('q'):
         break
 
 cap.release()

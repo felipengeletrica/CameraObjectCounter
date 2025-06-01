@@ -89,6 +89,10 @@ python main.py --camera 0
 python main.py --camera "rtsp://usuario:senha@ip:554/..."
 ```
 
+### Usando arquivo de vídeo (MP4, AVI, etc.)
+```bash
+python main.py --video caminho/do/video.mp4
+```
 ---
 
 ## 📁 Estrutura do projeto
